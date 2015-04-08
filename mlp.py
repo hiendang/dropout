@@ -13,7 +13,7 @@ import theano.printing
 import theano.tensor.shared_randomstreams
 
 from logistic_sgd import LogisticRegression
-from load_data import load_umontreal_data, load_mnist
+from load_data import load_umontreal_data, load_mnist, load_otto
 
 
 ##################################
@@ -196,8 +196,9 @@ def test_mlp(
     mom_end = mom_params["end"]
     mom_epoch_interval = mom_params["interval"]
     
-    
-    datasets = load_mnist(dataset)
+    datasets = load_otto(dataset)
+    #datasets = load_mnist(dataset)
+	#
     train_set_x, train_set_y = datasets[0]
     valid_set_x, valid_set_y = datasets[1]
     test_set_x, test_set_y = datasets[2]
@@ -211,7 +212,7 @@ def test_mlp(
     # BUILD ACTUAL MODEL #
     ######################
 
-    print '... building the model'
+    print ('... building the model')
 
     # allocate symbolic variables for the data
     index = T.lscalar()    # index to a [mini]batch
@@ -329,7 +330,7 @@ def test_mlp(
     ###############
     # TRAIN MODEL #
     ###############
-    print '... training'
+    print ('... training')
 
     best_params = None
     best_validation_errors = np.inf
@@ -385,18 +386,18 @@ if __name__ == '__main__':
     squared_filter_length_limit = 15.0
     n_epochs = 3000
     batch_size = 100
-    layer_sizes = [ 28*28, 1200, 1200, 10 ]
+    layer_sizes = [93, 400, 1100, 300, 9]
     
     # dropout rate for each layer
-    dropout_rates = [ 0.2, 0.5, 0.5 ]
+    dropout_rates = [ 0.2, 0.5, 0.5 ,0.3]
     # activation functions for each layer
     # For this demo, we don't need to set the activation functions for the 
     # on top layer, since it is always 10-way Softmax
-    activations = [ ReLU, ReLU ]
+    activations = [ ReLU, ReLU, Tanh]
     
     #### the params for momentum
     mom_start = 0.5
-    mom_end = 0.99
+    mom_end = 0.95
     # for epoch in [0, mom_epoch_interval], the momentum increases linearly
     # from mom_start to mom_end. After mom_epoch_interval, it stay at mom_end
     mom_epoch_interval = 500

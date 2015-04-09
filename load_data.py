@@ -33,15 +33,19 @@ def _shared_dataset(data_xy):
     return shared_x, T.cast(shared_y, 'int32')
 
 def load_otto(path):
-    (train,labels) = ld.loadShuffledTrain()
-    (train_set_x,train_set_y,test_set_x,test_set_y) = ld.splitTrainSet(train,labels);
+	
+	train,labels = ld.loadShuffledTrain()
+	(train_set_x,train_set_y,valid_set_x,valid_set_y) =ld.splitTrainSet(train,labels);
+	train_set_x = ld.preprocessingData(train_set_x);
+	valid_set_x = ld.preprocessingData(valid_set_x);
+	train_set_x, train_set_y = _shared_dataset((train_set_x, train_set_y));
+	valid_set_x, valid_set_y = _shared_dataset((valid_set_x, valid_set_y));
+	test_set_x = ld.loadTestSet()
+	test_set_x = ld.preprocessingData(test_set_x)
+	test_set_x = theano.shared(np.asarray(test_set_x, dtype=theano.config.floatX))
+	rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),(test_set_x)]
+	return rval
     
-    train_set_x, train_set_y = _shared_dataset((train_set_x, train_set_y))
-    test_set_x, test_set_y = _shared_dataset((test_set_x, test_set_y))
-    valid_set_x, valid_set_y = test_set_x, test_set_y
-    
-    rval = [(train_set_x, train_set_y), (valid_set_x, valid_set_y),(test_set_x, test_set_y)]
-    return rval
 
 
 def load_mnist(path):

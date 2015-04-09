@@ -105,4 +105,3 @@ class LogisticRegression(object):
         else:
             raise NotImplementedError()
 
-
